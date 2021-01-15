@@ -1,0 +1,20 @@
+{
+  "name": "inapp-statistic-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apla/clickhouse": "^1.6.4",
+    "config": "^3.3.3",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "pg": "^8.5.1",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6"
+  }
+}
