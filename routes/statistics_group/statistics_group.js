@@ -2,30 +2,26 @@ const express = require("express");
 const router = express.Router();
 
 const db = require("../../db/db_call");
+const properQueryString = require("../../utils/properQueryString");
+const QueryString = require("../../utils/queryString");
 
 router.get("/", async (req, res) => {
-  // db.fetch("select * from ", "users");
-
-  const queryString = new db.QueryString()
+  const queryString = new QueryString()
     .Table("header_bidder.statistic_group")
     .Select()
-    .Where("app_id")
-    .Between("50000", "233333")
-    .OrderBy("bidder_id", "ASC")
     .Finalize();
 
-  console.log(queryString);
-
   const response = await db.fetchClickHouse(queryString);
-  res.json(response.data);
+  res.json(response);
 });
 
 router.get("/query", async (req, res) => {
-  console.log("reqQuery ==== > ", req.query);
-  const response = await db.fetchClickHouse(
+  console.log(properQueryString);
+  const queryString = properQueryString(
     "header_bidder.statistic_group",
     req.query
   );
+  const response = await db.fetchClickHouse(queryString);
   res.json(response);
 });
 

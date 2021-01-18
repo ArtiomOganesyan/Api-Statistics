@@ -9,65 +9,8 @@ const clickhouse = new ch({
   port: 8123,
 });
 
-function QueryString(string) {
-  this.queryString = "";
-  this.table = "";
-}
-
-QueryString.prototype = {
-  Table: function (string) {
-    this.table = string;
-    return this;
-  },
-  Select: function (string) {
-    if (string) {
-      this.queryString = `SELECT ${string} FROM ${this.table}`;
-    } else {
-      this.queryString = `SELECT * FROM ${this.table}`;
-    }
-    return this;
-  },
-  Where: function (string) {
-    this.queryString = `${this.queryString} WHERE ${string}`;
-    return this;
-  },
-  ToEqual: function (num) {
-    this.queryString = `${this.queryString}=${num}`;
-    return this;
-  },
-  From: function (num) {
-    this.queryString += `<=${num}`;
-    return this;
-  },
-  To: function (num) {
-    this.queryString += `>=${num}`;
-    return this;
-  },
-  Between: function (from, to) {
-    this.queryString += ` BETWEEN ${from} AND ${to}`;
-    return this;
-  },
-  OrderBy: function (field, direction) {
-    this.queryString += ` ORDER BY ${field} ${direction}`;
-    return this;
-  },
-  Format: function (string) {
-    if (!string) {
-      this.queryString = `${this.queryString} FORMAT JSON`;
-    } else {
-      this.queryString = `${this.queryString} ${string}`;
-    }
-    return this;
-  },
-  Finalize: function () {
-    return this.queryString;
-  },
-};
-
 async function fetchClickHouse(string) {
   const stream = await clickhouse.querying(string);
-  console.log(stream.rows);
-
   return stream;
 
   //Promise interface
@@ -106,4 +49,4 @@ async function fetchClickHouse(string) {
 //   database: database,
 // });
 
-module.exports = { fetchClickHouse, QueryString };
+module.exports = { fetchClickHouse };
