@@ -9,33 +9,63 @@ const clickhouse = new ch({
   port: 8123,
 });
 
-async function fetchClickHouse(table, requestQuery) {
-  let query = {
-    count: -1,
-    columns: "*",
-    sort: "DESC",
-    ...requestQuery,
-  };
-  let querySelector = `SELECT ${query.columns} FROM ${table}`;
-  console.log(query);
-  if (query.field) {
-    if (query.toEqual) {
-      querySelector += ` WHERE ${query.field}=${query.toEqual}`;
+function QueryString(string) {
+  this.queryString = "";
+  this.table = "";
+}
+
+QueryString.prototype = {
+  Table: function (string) {
+    this.table = string;
+    return this;
+  },
+  Select: function (string) {
+    if (string) {
+      this.queryString = `SELECT ${string} FROM ${this.table}`;
+    } else {
+      this.queryString = `SELECT * FROM ${this.table}`;
     }
-    if (query.from && !query.to) {
-      querySelector += ` WHERE ${query.field}<=${query.from}`;
+    return this;
+  },
+  Where: function (string) {
+    this.queryString = `${this.queryString} WHERE ${string}`;
+    return this;
+  },
+  ToEqual: function (num) {
+    this.queryString = `${this.queryString}=${num}`;
+    return this;
+  },
+  From: function (num) {
+    this.queryString += `<=${num}`;
+    return this;
+  },
+  To: function (num) {
+    this.queryString += `>=${num}`;
+    return this;
+  },
+  Between: function (from, to) {
+    this.queryString += ` BETWEEN ${from} AND ${to}`;
+    return this;
+  },
+  OrderBy: function (field, direction) {
+    this.queryString += ` ORDER BY ${field} ${direction}`;
+    return this;
+  },
+  Format: function (string) {
+    if (!string) {
+      this.queryString = `${this.queryString} FORMAT JSON`;
+    } else {
+      this.queryString = `${this.queryString} ${string}`;
     }
-    if (query.to && !query.from) {
-      querySelector += ` WHERE ${query.field}>=${query.to}`;
-    }
-    if (query.from && query.to) {
-      querySelector += ` WHERE ${query.field} BETWEEN ${query.from} AND ${query.to}`;
-    }
-    querySelector += ` ORDER BY ${query.field} ${query.sort}`;
-  }
-  querySelector += ` FORMAT JSON`;
-  console.log(querySelector);
-  const stream = await clickhouse.querying(querySelector);
+    return this;
+  },
+  Finalize: function () {
+    return this.queryString;
+  },
+};
+
+async function fetchClickHouse(string) {
+  const stream = await clickhouse.querying(string);
   console.log(stream.rows);
 
   return stream;
@@ -76,4 +106,4 @@ async function fetchClickHouse(table, requestQuery) {
 //   database: database,
 // });
 
-module.exports = { fetchClickHouse };
+module.exports = { fetchClickHouse, QueryString };

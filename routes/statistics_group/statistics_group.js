@@ -6,7 +6,17 @@ const db = require("../../db/db_call");
 router.get("/", async (req, res) => {
   // db.fetch("select * from ", "users");
 
-  const response = await db.fetchClickHouse("header_bidder.statistic_group");
+  const queryString = new db.QueryString()
+    .Table("header_bidder.statistic_group")
+    .Select()
+    .Where("app_id")
+    .Between("50000", "233333")
+    .OrderBy("bidder_id", "ASC")
+    .Finalize();
+
+  console.log(queryString);
+
+  const response = await db.fetchClickHouse(queryString);
   res.json(response.data);
 });
 
