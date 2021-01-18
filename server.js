@@ -10,15 +10,7 @@ const swaggerOptions = {
       version: "1.0.0",
       title: "inApp-api-statistics",
       //   description: "",
-    },
-    tags: [
-      {
-        name: "Statistics_Group",
-      },
-      {
-        name: "Statistics",
-      },
-    ],
+    }
   },
   apis: [
     "./routes/statistics/statistics.js",

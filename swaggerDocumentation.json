@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is a simple API",
+    "description": "inApp-api-statistics",
     "version": "1.0.0",
-    "title": "Simple API",
+    "title": "inApp-api-statistics",
     "contact": {
-      "email": "you@your-company.com"
+      "email": "no@email.com"
     },
     "license": {
       "name": "Apache 2.0",
@@ -13,27 +13,21 @@
     }
   },
   "tags": [
-    {
-      "name": "admins",
-      "description": "Secured Admin-only calls"
+      {
+      "name": "statistics_group",
+      "description": "Table header_bidder.statistic_group"
     },
     {
-      "name": "developers",
-      "description": "Operations available to regular developers"
-    },
-    {
-      "name": "STATISTICS_GROUP"
-    },
-    {
-      "name": "STATISTICS"
+      "name": "statistics",
+      "description": "Table header_bidder.statistic"
     }
   ],
   "paths": {
     "/statistics_group": {
       "get": {
-        "summary": "table statistics_group",
+        "summary": "whole table",
         "produces": ["application/json"],
-        "tags": ["STATISTICS_GROUP"],
+        "tags": ["statistics_group"],
         "responses": {
           "200": {
             "description": "By calling /statistics_group you will receive the full table /statistics_group"
@@ -42,20 +36,68 @@
         "deprecated": false
       }
     },
-    "/statistics_group/{id}": {
+    "/statistics_group/query": {
       "get": {
-        "summary": "table row statistics_group",
+        "summary": "select from statistics_group",
         "produces": ["application/json"],
-        "tags": ["STATISTICS_GROUP"],
+        "tags": ["statistics_group"],
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
-            "description": "pass an optional search string for looking up inventory",
-            "required": true,
-            "type": "integer",
-            "format": "uint32",
-            "minimum": 0
+            "in": "query",
+            "name": "date",
+            "description": "if date is passed then \"from\", \"to\" or \"equal\" is needed",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "adds a field after WHERE",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "equal",
+            "description": "WHERE \"field\" will equal \"equal\". Depending on the field the input can be UInt16, 32, 64 or decimal(18,6) or date(yyyy-mm-dd).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "description": "WHERE \"field\" is greater or equal \"equal\". If both \"from\" and \"to\" are filled than between will be in query. Depending on the field the input can be UInt16, 32, 64 or decimal(18,6) or date(yyyy-mm-dd).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "description": "WHERE \"field\" is less or equal \"equal\". If both \"from\" and \"to\" are filled than between will be in query. Depending on the field the input can be UInt16, 32, 64 or decimal(18,6) or date(yyyy-mm-dd).",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "ORDER field. If is not empty than BY must be filled.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "by",
+            "description": "BY descending or ascending",
+            "required": false,
+            "type": "string",
+            "enum": ["DESC", "ASC"]
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "description": "FORMAT if not passed than json will be returned",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {
