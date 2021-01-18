@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/query", async (req, res) => {
-  console.log(properQueryString);
   const queryString = properQueryString("header_bidder.statistic", req.query);
   const response = await db.fetchClickHouse(queryString);
   res.json(response);

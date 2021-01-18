@@ -2,7 +2,6 @@ const db = require("../db/db_call");
 const QueryString = require("../utils/queryString");
 
 function properQueryString(table, query = {}) {
-  console.log("======>>>>", query);
 
   const { select, date, where, from, to, equal, order, by, format } = query;
 
