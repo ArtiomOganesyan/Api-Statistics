@@ -9,35 +9,8 @@ const clickhouse = new ch({
   port: 8123,
 });
 
-async function fetchClickHouse(table, requestQuery) {
-  let query = {
-    count: -1,
-    columns: "*",
-    sort: "DESC",
-    ...requestQuery,
-  };
-  let querySelector = `SELECT ${query.columns} FROM ${table}`;
-  console.log(query);
-  if (query.field) {
-    if (query.toEqual) {
-      querySelector += ` WHERE ${query.field}=${query.toEqual}`;
-    }
-    if (query.from && !query.to) {
-      querySelector += ` WHERE ${query.field}<=${query.from}`;
-    }
-    if (query.to && !query.from) {
-      querySelector += ` WHERE ${query.field}>=${query.to}`;
-    }
-    if (query.from && query.to) {
-      querySelector += ` WHERE ${query.field} BETWEEN ${query.from} AND ${query.to}`;
-    }
-    querySelector += ` ORDER BY ${query.field} ${query.sort}`;
-  }
-  querySelector += ` FORMAT JSON`;
-  console.log(querySelector);
-  const stream = await clickhouse.querying(querySelector);
-  console.log(stream.rows);
-
+async function fetchClickHouse(string) {
+  const stream = await clickhouse.querying(string);
   return stream;
 
   //Promise interface
